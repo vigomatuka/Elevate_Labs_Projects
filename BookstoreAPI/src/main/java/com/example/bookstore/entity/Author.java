@@ -2,9 +2,10 @@ package com.example.bookstore.entity;
 import jakarta.persistence.*;
 import java.util.List;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@Entity
+@Table(name = "authors")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,6 +14,7 @@ public class Author {
     @Column(nullable = false)
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Book> books;
 
