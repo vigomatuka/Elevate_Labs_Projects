@@ -8,6 +8,11 @@ import com.example.bookstore.entity.Book;
 import com.example.bookstore.service.BookService;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.domain.Sort;
 
 @RestController
 @RequestMapping("/api/books")
@@ -67,4 +72,26 @@ public class BookController {
         return bookService.getBooksByAuthorId(authorId);
     }
 
+    @GetMapping("/page")
+    public Page<Book> getBooksPaginated(
+        @PageableDefault(
+            size = 2,
+            sort = "title",
+            direction = Sort.Direction.ASC
+        ) Pageable pageable
+    ) {
+        return bookService.getBooksPage(pageable);
+    }
+    @GetMapping("/search/page")
+    public Page<Book> searchBooks(
+        @RequestParam String keyword,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size,
+        @RequestParam(defaultValue = "title") String sortBy,
+        @RequestParam(defaultValue = "asc") String sortDir
+    ) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") ? Sort.by(sortBy).descending() : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return bookService.searchBooks(keyword, pageable);
+    }
 }

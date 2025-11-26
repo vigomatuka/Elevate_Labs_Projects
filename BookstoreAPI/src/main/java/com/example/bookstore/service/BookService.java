@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class BookService {
@@ -29,5 +31,11 @@ public class BookService {
     }
     public List<Book> getBooksByAuthorId(Long authorId){
         return bookRepository.findByAuthorId(authorId);
+    }
+    public Page<Book> getBooksPage(Pageable pageable){
+        return bookRepository.findAll(pageable);
+    }
+    public Page<Book> searchBooks(String title, Pageable pageable){
+        return bookRepository.findByTitleContaining(title, pageable);
     }
 }
